@@ -1,0 +1,28 @@
+name = "sbir-grants"
+main = "src/index.ts"
+compatibility_date = "2026-02-23"
+
+[env.production]
+routes = [{ pattern = "sbir-grants.wayneq77.workers.dev" }]
+
+[[r2_buckets]]
+bucket_name = "sbir-saas-bucket"
+binding = "sbir_saas_bucket"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "sbir-saas-db"
+database_id = "8cf8fed0-b543-4062-8ea0-948da21f251a"
+
+[ai]
+binding = "AI"
+
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "sbir_chunks"
+
+[vars]
+FRONTEND_URL = "https://frontend-orpin-nu-97.vercel.app"
+
+[compatibility_flags]
+nodejs_compat = true
