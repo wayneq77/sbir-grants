@@ -39,7 +39,7 @@ const getGoogleOAuthUrl = (origin: string, clientId: string, state: string) => {
 }
 
 const redirectWithError = (c: Context<{ Bindings: Bindings }>, code: string) => {
-    const frontendUrl = c.env.FRONTEND_URL || 'https://sbir.thinkwithblack.com'
+    const frontendUrl = c.env.FRONTEND_URL || 'https://frontend-orpin-nu-97.vercel.app'
     const url = new URL(`${frontendUrl.replace(/\/+$/, '')}/login`)
     url.searchParams.set('error', code)
     return c.redirect(url.toString(), 302)
@@ -101,7 +101,7 @@ authApp.post('/google/precheck', async (c) => {
         return redirectWithError(c, 'TURNSTILE_FAILED')
     }
 
-    const frontendUrl = c.env.FRONTEND_URL || 'https://sbir.thinkwithblack.com'
+    const frontendUrl = c.env.FRONTEND_URL || 'https://frontend-orpin-nu-97.vercel.app'
     const expectedHostname = new URL(frontendUrl).hostname
     const legacyDomain = getLegacyCookieDomain(frontendUrl)
     if (verifyData.hostname && verifyData.hostname !== expectedHostname) {
@@ -131,7 +131,7 @@ authApp.post('/google/precheck', async (c) => {
 })
 
 authApp.get('/google/login', (c) => {
-    const frontendUrl = c.env.FRONTEND_URL || 'https://sbir.thinkwithblack.com'
+    const frontendUrl = c.env.FRONTEND_URL || 'https://frontend-orpin-nu-97.vercel.app'
     return c.redirect(`${frontendUrl.replace(/\/+$/, '')}/login`, 302)
 })
 
@@ -144,7 +144,7 @@ authApp.get('/google/callback', async (c) => {
         return c.text('Invalid request or state mismatch', 400)
     }
 
-    const frontendUrl = c.env.FRONTEND_URL || 'https://sbir.thinkwithblack.com'
+    const frontendUrl = c.env.FRONTEND_URL || 'https://frontend-orpin-nu-97.vercel.app'
     const legacyDomain = getLegacyCookieDomain(frontendUrl)
     deleteCookie(c, 'oauth_state', { path: '/' })
     if (legacyDomain) {
@@ -225,7 +225,7 @@ authApp.get('/google/callback', async (c) => {
 })
 
 authApp.post('/logout', (c) => {
-    const frontendUrl = c.env.FRONTEND_URL || 'https://sbir.thinkwithblack.com';
+    const frontendUrl = c.env.FRONTEND_URL || 'https://frontend-orpin-nu-97.vercel.app';
     const legacyDomain = getLegacyCookieDomain(frontendUrl)
     deleteCookie(c, 'auth_session', { path: '/' })
     deleteCookie(c, 'oauth_state', { path: '/' })

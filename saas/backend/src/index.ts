@@ -18,7 +18,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>({ strict: fal
 // Global middleware
 app.use('*', async (c, next) => {
   const corsMiddleware = cors({
-    origin: c.env.FRONTEND_URL || 'https://sbir.thinkwithblack.com',
+    origin: c.env.FRONTEND_URL || 'https://frontend-orpin-nu-97.vercel.app',
     allowHeaders: ['Content-Type', 'Authorization'],
     allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'],
     exposeHeaders: ['Content-Length'],

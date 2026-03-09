@@ -26,6 +26,6 @@
   ],
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
-    "FRONTEND_URL": "https://sbir.thinkwithblack.com"
+    "FRONTEND_URL": "https://frontend-orpin-nu-97.vercel.app"
   }
 }
