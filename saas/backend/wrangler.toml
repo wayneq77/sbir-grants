@@ -2,9 +2,6 @@ name = "sbir-grants"
 main = "src/index.ts"
 compatibility_date = "2026-02-23"
 
-[env.production]
-name = "sbir-grants"
-
 [[r2_buckets]]
 bucket_name = "sbir-saas-bucket"
 binding = "sbir_saas_bucket"
