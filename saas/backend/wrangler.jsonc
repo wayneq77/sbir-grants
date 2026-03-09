@@ -1,40 +1,31 @@
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "sbir-backend",
-	"main": "src/index.ts",
-	"compatibility_date": "2026-02-23",
-	"routes": [
-		{
-			"pattern": "sbir-api.thinkwithblack.com",
-			"custom_domain": true
-		}
-	],
-	"r2_buckets": [
-		{
-			"bucket_name": "sbir-saas-bucket",
-			"binding": "sbir_saas_bucket"
-		}
-	],
-	"d1_databases": [
-		{
-			"binding": "DB",
-			"database_name": "sbir-saas-db",
-			"database_id": "8cf8fed0-b543-4062-8ea0-948da21f251a"
-		}
-	],
-	"ai": {
-		"binding": "AI"
-	},
-	"vectorize": [
-		{
-			"binding": "VECTORIZE",
-			"index_name": "sbir_chunks"
-		}
-	],
-	"compatibility_flags": [
-		"nodejs_compat"
-	],
-	"vars": {
-		"FRONTEND_URL": "https://sbir.thinkwithblack.com"
-	}
+  "name": "sbir-backend",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-02-23",
+  "r2_buckets": [
+    {
+      "bucket_name": "sbir-saas-bucket",
+      "binding": "sbir_saas_bucket"
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "sbir-saas-db",
+      "database_id": "8cf8fed0-b543-4062-8ea0-948da21f251a"
+    }
+  ],
+  "ai": {
+    "binding": "AI"
+  },
+  "vectorize": [
+    {
+      "binding": "VECTORIZE",
+      "index_name": "sbir_chunks"
+    }
+  ],
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "FRONTEND_URL": "https://sbir.thinkwithblack.com"
+  }
 }
