@@ -3,7 +3,7 @@ main = "src/index.ts"
 compatibility_date = "2026-02-23"
 
 [env.production]
-routes = [{ pattern = "sbir-grants.wayneq77.workers.dev" }]
+name = "sbir-grants"
 
 [[r2_buckets]]
 bucket_name = "sbir-saas-bucket"
