@@ -13,6 +13,11 @@ import { apiRateLimitMiddleware, authMiddleware, Bindings, Variables } from './m
 import { processDocumentQueue, DocProcessingMessage } from './queue'
 import { encryptSecret } from './utils/secrets'
 
+// Debug route - test if routing works
+app.get("/test", (c) => {
+  return c.json({ message: "Test route works!" })
+})
+
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>({ strict: false })
 
 // Global middleware
@@ -107,6 +112,11 @@ app.delete('/api/me/keys/:keyType', authMiddleware, apiRateLimitMiddleware, asyn
   if (!allowed.includes(keyType)) return c.json({ error: 'Invalid key type' }, 400)
   await c.env.DB.prepare(`UPDATE users SET ${keyType} = NULL WHERE id = ?`).bind(user.sub).run()
   return c.json({ success: true })
+})
+
+// Debug route
+app.get("/debug", (c) => {
+  return c.json({ message: "Debug route works!", routes: "registered" })
 })
 
 app.get('/', (c) => {
