@@ -48,7 +48,7 @@ interface DocChunk {
 function normalizeArrayPayload<T>(payload: unknown, preferredKeys: string[] = []): T[] {
     if (Array.isArray(payload)) return payload as T[];
     if (payload && typeof payload === 'object') {
-        const record = payload as Record<string, unknown>;
+        const record = payload as unknown as Record<string, unknown>;
         for (const key of preferredKeys) {
             if (Array.isArray(record[key])) return record[key] as T[];
         }
@@ -60,11 +60,11 @@ function normalizeArrayPayload<T>(payload: unknown, preferredKeys: string[] = []
 
 function normalizeProjectPayload(payload: unknown): Project | null {
     if (payload && typeof payload === 'object') {
-        const record = payload as Record<string, unknown>;
+        const record = payload as unknown as Record<string, unknown>;
         if (record.project) return normalizeProjectPayload(record.project);
         if (typeof record.id === 'string' && typeof record.title === 'string') {
             return {
-                ...(record as Project),
+                ...{...(record as unknown as Project)},
                 sections: normalizeArrayPayload<Section>(record.sections, ['sections']),
             };
         }
