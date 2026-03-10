@@ -10,6 +10,7 @@ export type Bindings = {
   DATA_ENCRYPTION_KEY?: string
   TURNSTILE_SECRET_KEY: string
   FRONTEND_URL: string
+  BACKEND_URL: string
   sbir_saas_bucket: R2Bucket
   AI: any
   VECTORIZE: any

@@ -5,6 +5,8 @@ import { AlertCircle, Loader2, Rocket, ShieldCheck } from 'lucide-react';
 
 const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8787' : 'https://sbir-backend.wayneq77.workers.dev');
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '';
+// 開發模式或沒有設定 Turnstile 時跳過驗證
+const SKIP_TURNSTILE = import.meta.env.DEV || !TURNSTILE_SITE_KEY;
 const TURNSTILE_SCRIPT_ID = 'cf-turnstile-script';
 const TURNSTILE_SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
 
@@ -104,14 +106,19 @@ export default function Login() {
                 <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                     <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-slate-200">
                         <form action={`${API_BASE}/auth/google/precheck`} method="POST" onSubmit={handleSubmit} className="space-y-6">
-                            {!TURNSTILE_SITE_KEY ? (
+                            {SKIP_TURNSTILE ? (
+                                <div className="flex items-start gap-2 rounded-md border border-yellow-200 bg-yellow-50 px-3 py-2 text-sm text-yellow-700">
+                                    <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
+                                    <span>驗證已暫時停用（開發模式）。</span>
+                                </div>
+                            ) : !TURNSTILE_SITE_KEY ? (
                                 <div className="flex items-start gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
                                     <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
                                     <span>尚未設定 Turnstile site key，登入已停用。</span>
                                 </div>
                             ) : null}
 
-                            {TURNSTILE_SITE_KEY ? (
+                            {TURNSTILE_SITE_KEY && !SKIP_TURNSTILE ? (
                                 <div className="flex justify-center min-h-[70px] items-center">
                                     <div
                                         className="cf-turnstile"
@@ -125,7 +132,7 @@ export default function Login() {
                                 </div>
                             ) : null}
 
-                            {TURNSTILE_SITE_KEY && !isScriptReady ? (
+                            {TURNSTILE_SITE_KEY && !SKIP_TURNSTILE && !isScriptReady ? (
                                 <div className="flex items-center justify-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500">
                                     <Loader2 className="w-4 h-4 animate-spin" />
                                     正在載入 Cloudflare 驗證元件...
@@ -141,7 +148,7 @@ export default function Login() {
 
                             <button
                                 type="submit"
-                                disabled={isSubmitting || !TURNSTILE_SITE_KEY || !isScriptReady}
+                                disabled={isSubmitting || (!SKIP_TURNSTILE && (!TURNSTILE_SITE_KEY || !isScriptReady))}
                                 className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                             >
                                 {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}

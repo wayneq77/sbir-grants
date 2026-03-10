@@ -1,5 +1,13 @@
 {
   "rewrites": [
+    { "source": "/auth/google/callback", "destination": "https://sbir-backend.wayneq77.workers.dev/auth/google/callback" },
+    { "source": "/auth/google/precheck", "destination": "https://sbir-backend.wayneq77.workers.dev/auth/google/precheck" },
     { "source": "/(.*)", "destination": "/" }
+  ],
+  "proxies": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://sbir-backend.wayneq77.workers.dev/api/:path*"
+    }
   ]
 }

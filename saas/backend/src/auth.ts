@@ -27,8 +27,8 @@ type TurnstileVerifyResponse = {
     'error-codes'?: string[]
 }
 
-const getGoogleOAuthUrl = (origin: string, clientId: string, state: string) => {
-    const redirectUri = `${origin}/auth/google/callback`
+const getGoogleOAuthUrl = (origin: string, clientId: string, state: string, backendUrl: string) => {
+    const redirectUri = `${backendUrl}/auth/google/callback`
     const url = new URL('https://accounts.google.com/o/oauth2/v2/auth')
     url.searchParams.set('client_id', clientId)
     url.searchParams.set('redirect_uri', redirectUri)
@@ -80,6 +80,7 @@ authApp.post('/google/precheck', async (c) => {
     }
 
     const state = generateState()
+    console.log('[AUTH] Precheck - setting oauth_state:', state)
     setCookie(c, 'oauth_state', state, {
         httpOnly: true,
         secure: true,
@@ -88,7 +89,8 @@ authApp.post('/google/precheck', async (c) => {
         path: '/',
     })
 
-    const loginUrl = getGoogleOAuthUrl(frontendUrl, c.env.GOOGLE_CLIENT_ID, state)
+    const backendUrl = c.env.BACKEND_URL || 'https://sbir-backend.wayneq77.workers.dev'
+    const loginUrl = getGoogleOAuthUrl(frontendUrl, c.env.GOOGLE_CLIENT_ID, state, backendUrl)
     return c.redirect(loginUrl, 302)
 })
 
@@ -101,20 +103,25 @@ authApp.get('/google/callback', async (c) => {
     const code = c.req.query('code')
     const state = c.req.query('state')
     const storedState = getCookie(c, 'oauth_state')
+    
+    console.log('[AUTH] Callback - code:', !!code, 'state:', state, 'storedState:', storedState)
 
     if (!code || !state || state !== storedState) {
+        console.log('[AUTH] State mismatch - incoming state:', state, 'stored:', storedState)
         return c.text('Invalid request or state mismatch', 400)
     }
 
     const frontendUrl = c.env.FRONTEND_URL || 'https://frontend-orpin-nu-97.vercel.app'
+    const backendUrl = c.env.BACKEND_URL || 'https://sbir-backend.wayneq77.workers.dev'
     const legacyDomain = getLegacyCookieDomain(frontendUrl)
+    
     deleteCookie(c, 'oauth_state', { path: '/' })
     if (legacyDomain) {
         deleteCookie(c, 'oauth_state', { path: '/', domain: legacyDomain })
         deleteCookie(c, 'auth_session', { path: '/', domain: legacyDomain })
     }
 
-    const redirectUri = frontendUrl + '/auth/google/callback';
+    const redirectUri = backendUrl + '/auth/google/callback';
 
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
@@ -175,6 +182,9 @@ authApp.get('/google/callback', async (c) => {
     }
     const token = await sign(payload, c.env.JWT_SECRET)
 
+    console.log('[AUTH] Setting session cookie, token length:', token.length)
+    
+    // 設定 cookie - 不要指定 domain，讓瀏覽器自動處理
     setCookie(c, 'auth_session', token, {
         httpOnly: true,
         secure: true,
