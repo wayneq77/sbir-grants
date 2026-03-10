@@ -193,7 +193,10 @@ authApp.get('/google/callback', async (c) => {
         maxAge: 60 * 60 * 24 * 7,
     })
 
-    return c.redirect(`${frontendUrl.replace(/\/+$/, '')}/app`)
+    // 設定 cookie（即使跨域問題存在，也設定作為後備）
+    // 並且使用 URL hash 傳遞 token 給前端
+    const redirectWithToken = `${frontendUrl.replace(/\/+$/, '')}/app#token=${encodeURIComponent(token)}`
+    return c.redirect(redirectWithToken, 302)
 })
 
 authApp.post('/logout', (c) => {

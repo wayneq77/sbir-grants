@@ -1,4 +1,9 @@
+# SPA Routes
 /app/* /index.html 200
 /projects/* /index.html 200
 /settings /index.html 200
 /login /index.html 200
+
+# API Proxy - Cloudflare Pages 會將這些請求轉發到後端
+/auth/* https://sbir-backend.wayneq77.workers.dev/auth/:splat 200
+/api/* https://sbir-backend.wayneq77.workers.dev/api/:splat 200

@@ -32,7 +32,15 @@ export type Variables = {
 }
 
 export const authMiddleware = async (c: Context<{ Bindings: Bindings; Variables: Variables }>, next: Next) => {
-  const token = getCookie(c, 'auth_session')
+  // 優先從 Authorization header 讀取 Bearer token（來自 localStorage）
+  const authHeader = c.req.header('Authorization')
+  let token = authHeader?.replace('Bearer ', '')
+  
+  // 如果沒有 Bearer token，則從 cookie 讀取
+  if (!token) {
+    token = getCookie(c, 'auth_session')
+  }
+  
   if (!token) {
     return c.json({ error: 'Unauthorized' }, 401)
   }
