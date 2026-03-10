@@ -1,0 +1,13 @@
+# Cloudflare Pages 靜態網站部署配置
+name = "sbir-grants"
+compatibility_date = "2026-02-23"
+
+[build]
+command = "npm run build"
+cwd = "."
+watch_dir = "src"
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
