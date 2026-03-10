@@ -28,7 +28,7 @@ type TurnstileVerifyResponse = {
 }
 
 const getGoogleOAuthUrl = (origin: string, clientId: string, state: string, backendUrl: string) => {
-    const redirectUri = `${backendUrl}/auth/google/callback`
+    const redirectUri = `${backendUrl}/api/auth/google/callback`
     const url = new URL('https://accounts.google.com/o/oauth2/v2/auth')
     url.searchParams.set('client_id', clientId)
     url.searchParams.set('redirect_uri', redirectUri)
@@ -121,7 +121,7 @@ authApp.get('/google/callback', async (c) => {
         deleteCookie(c, 'auth_session', { path: '/', domain: legacyDomain })
     }
 
-    const redirectUri = backendUrl + '/auth/google/callback';
+    const redirectUri = backendUrl + '/api/auth/google/callback';
 
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
