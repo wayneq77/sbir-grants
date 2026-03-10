@@ -20,7 +20,7 @@ index_name = "sbir_chunks"
 
 [vars]
 # 非敏感性設定
-FRONTEND_URL = "https://sbir-grants.pages.dev"
+FRONTEND_URL = "https://489b9cea.sbir-grants.pages.dev"
 BACKEND_URL = "https://sbir-backend.wayneq77.workers.dev"
 
 compatibility_flags = ["nodejs_compat"]
