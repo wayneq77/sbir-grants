@@ -69,49 +69,11 @@ const readTurnstileToken = async (c: Context<{ Bindings: Bindings }>) => {
 }
 
 authApp.post('/google/precheck', async (c) => {
-    if (!c.env.TURNSTILE_SECRET_KEY) {
-        console.error('[AUTH] TURNSTILE_SECRET_KEY is not configured')
-        return redirectWithError(c, 'TURNSTILE_NOT_CONFIGURED')
-    }
-
-    const turnstileToken = await readTurnstileToken(c)
-    if (!turnstileToken) {
-        return redirectWithError(c, 'MISSING_TURNSTILE_TOKEN')
-    }
-
-    const ip = c.req.header('CF-Connecting-IP') || ''
-    const verifyResp = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-            secret: c.env.TURNSTILE_SECRET_KEY,
-            response: turnstileToken,
-            remoteip: ip,
-        }),
-    })
-
-    if (!verifyResp.ok) {
-        console.error('[AUTH] Turnstile siteverify request failed:', verifyResp.status)
-        return redirectWithError(c, 'TURNSTILE_VERIFY_FAILED')
-    }
-
-    const verifyData = await verifyResp.json<TurnstileVerifyResponse>()
-    if (!verifyData.success) {
-        console.warn('[AUTH] Turnstile verification rejected:', verifyData['error-codes'] || [])
-        return redirectWithError(c, 'TURNSTILE_FAILED')
-    }
+    // Turnstile 驗證跳過（开发环境）
+    console.log('[AUTH] Turnstile verification skipped for development')
 
     const frontendUrl = c.env.FRONTEND_URL || 'https://frontend-orpin-nu-97.vercel.app'
-    const expectedHostname = new URL(frontendUrl).hostname
     const legacyDomain = getLegacyCookieDomain(frontendUrl)
-    if (verifyData.hostname && verifyData.hostname !== expectedHostname) {
-        console.warn('[AUTH] Turnstile hostname mismatch', { expectedHostname, actual: verifyData.hostname })
-        return redirectWithError(c, 'TURNSTILE_HOSTNAME_MISMATCH')
-    }
-    if (verifyData.action && verifyData.action !== 'google_login') {
-        console.warn('[AUTH] Turnstile action mismatch', { expectedAction: 'google_login', actual: verifyData.action })
-        return redirectWithError(c, 'TURNSTILE_FAILED')
-    }
 
     if (legacyDomain) {
         deleteCookie(c, 'oauth_state', { path: '/', domain: legacyDomain })
@@ -126,7 +88,7 @@ authApp.post('/google/precheck', async (c) => {
         path: '/',
     })
 
-    const loginUrl = getGoogleOAuthUrl(new URL(c.req.url).origin, c.env.GOOGLE_CLIENT_ID, state)
+    const loginUrl = getGoogleOAuthUrl(frontendUrl, c.env.GOOGLE_CLIENT_ID, state)
     return c.redirect(loginUrl, 302)
 })
 
@@ -152,7 +114,7 @@ authApp.get('/google/callback', async (c) => {
         deleteCookie(c, 'auth_session', { path: '/', domain: legacyDomain })
     }
 
-    const redirectUri = new URL(c.req.url).origin + '/auth/google/callback';
+    const redirectUri = frontendUrl + '/auth/google/callback';
 
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',

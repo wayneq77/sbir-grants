@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Key, Save, CheckCircle2, Loader2, Trash2, X } from 'lucide-react';
 import axios from 'axios';
 
-const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8787' : 'https://sbir-api.thinkwithblack.com');
+const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8787' : 'https://sbir-backend.wayneq77.workers.dev');
 
 interface KeyStatus {
     claude_key_set: boolean;

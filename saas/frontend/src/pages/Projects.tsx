@@ -6,7 +6,7 @@ import axios from 'axios';
 // Ensure axios uses credentials for cookies
 axios.defaults.withCredentials = true;
 
-const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8787/api' : 'https://sbir-api.thinkwithblack.com/api');
+const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8787/api' : 'https://sbir-backend.wayneq77.workers.dev/api');
 
 interface Project {
     id: string;
