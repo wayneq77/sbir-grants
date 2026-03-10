@@ -40,7 +40,7 @@ app.use('*', async (c, next) => {
 })
 
 // Auth routes
-app.route('/api/auth', authApp)
+app.route('/auth', authApp)
 
 // App routes - projects
 app.route('/api/projects', projectsApp)

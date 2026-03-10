@@ -19,7 +19,7 @@ export default function Home() {
 
     const fetchProjects = async () => {
         try {
-            const { data } = await axios.get(`${API_BASE}/projects`);
+            const { data } = await axios.get(`${API_BASE}/api/projects`);
             setProjects(data);
         } catch (e) {
             console.error('Failed to fetch projects', e);
@@ -33,7 +33,7 @@ export default function Home() {
         if (!newTitle.trim()) return;
 
         try {
-            const { data } = await axios.post(`${API_BASE}/projects`, {
+            const { data } = await axios.post(`${API_BASE}/api/projects`, {
                 title: newTitle,
                 county: newCounty,
             });

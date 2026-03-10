@@ -6,7 +6,7 @@ import axios from 'axios';
 // Ensure axios uses credentials for cookies
 axios.defaults.withCredentials = true;
 
-const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8787/api' : 'https://sbir-backend.wayneq77.workers.dev/api');
+const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8787' : 'https://sbir-backend.wayneq77.workers.dev');
 
 interface Project {
     id: string;
@@ -48,7 +48,7 @@ export default function Projects() {
 
     const fetchProjects = async () => {
         try {
-            const { data } = await axios.get(`${API_BASE}/projects`);
+            const { data } = await axios.get(`${API_BASE}/api/projects`);
             setProjects(normalizeProjectsPayload(data));
         } catch (e) {
             console.error('Failed to fetch projects', e);
@@ -62,7 +62,7 @@ export default function Projects() {
         if (!newTitle.trim()) return;
 
         try {
-            const { data } = await axios.post(`${API_BASE}/projects`, {
+            const { data } = await axios.post(`${API_BASE}/api/projects`, {
                 title: newTitle,
                 county: newCounty,
             });

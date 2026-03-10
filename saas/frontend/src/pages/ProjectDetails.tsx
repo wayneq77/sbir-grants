@@ -8,7 +8,7 @@ import SectionCard from '../components/SectionCard';
 const QualityRadarChart = lazy(() => import('../components/QualityRadarChart'));
 
 axios.defaults.withCredentials = true;
-const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8787/api' : 'https://sbir-api.thinkwithblack.com/api');
+const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8787' : 'https://sbir-backend.wayneq77.workers.dev');
 
 interface Section {
     section_index: number;
@@ -136,7 +136,7 @@ export default function ProjectDetails() {
         const existingData = parseProjectProgressData();
         const updatedProgressData = JSON.stringify({ ...existingData, checklists: nextChecklistData });
 
-        await axios.put(`${API_BASE}/projects/${id}`, {
+        await axios.put(`${API_BASE}/api/projects/${id}`, {
             progress_data: updatedProgressData
         });
 
@@ -186,9 +186,9 @@ export default function ProjectDetails() {
     const fetchProjectData = useCallback(async () => {
         try {
             const [projRes, docsRes, sectionsRes] = await Promise.all([
-                axios.get(`${API_BASE}/projects/${id}`),
+                axios.get(`${API_BASE}/api/projects/${id}`),
                 axios.get(`${API_BASE}/storage/project/${id}`),
-                axios.get(`${API_BASE}/projects/${id}/sections`)
+                axios.get(`${API_BASE}/api/projects/${id}/sections`)
             ]);
                         const normalizedProject = normalizeProjectPayload(projRes.data);
             const normalizedSections = normalizeArrayPayload<Section>(sectionsRes.data, ['sections']);
@@ -372,7 +372,7 @@ export default function ProjectDetails() {
 
             // Refetch the absolute latest sections from the server first
             // because React state might only have the old chunks if the user just clicked Generate
-            const res = await axios.get(`${API_BASE}/projects/${id}/sections`);
+            const res = await axios.get(`${API_BASE}/api/projects/${id}/sections`);
             const latestSections = res.data;
 
             if (!latestSections || latestSections.length === 0) {
@@ -633,7 +633,7 @@ export default function ProjectDetails() {
                                     // Store wizard answers under the `wizardAnswers` key to avoid overwriting checklists
                                     const updatedProgress = { ...parsedData, wizardAnswers: { ...(parsedData.wizardAnswers || {}), ...answers } };
                                     const { data: updatedProject } = await axios.put(
-                                        `${API_BASE}/projects/${id}`,
+                                        `${API_BASE}/api/projects/${id}`,
                                         { progress_data: JSON.stringify(updatedProgress) }
                                     );
                                     setProject(updatedProject);
