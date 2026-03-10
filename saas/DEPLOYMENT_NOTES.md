@@ -217,6 +217,26 @@ npx wrangler deploy -c wrangler.toml
 
 ---
 
+## 重要發現
+
+### 網址對應關係
+- 前端網址：`https://{hash}.sbir-grants.pages.dev`
+- 後端網址：`https://sbir-backend.wayneq77.workers.dev`
+- 前端呼叫後端 API：`VITE_API_URL = https://sbir-backend.wayneq77.workers.dev/api`
+- Auth 路由：`/api/auth/google/precheck` 和 `/api/auth/google/callback`
+
+### Google OAuth 設定
+- 每次修改 auth 路徑（例如從 `/auth` 改到 `/api/auth`），都需要更新 Google Cloud Console 的 authorized redirect URIs
+- 新增 URL：`https://sbir-backend.wayneq77.workers.dev/api/auth/google/callback`
+- 設定需要 5-30 分鐘才會生效
+
+### Cloudflare Pages 部署
+- 每次部署都會產生新的網址（例如 `https://78b5469e.sbir-grants.pages.dev`）
+- 需要更新後端的 FRONTEND_URL 環境變數
+- 長期方案：設定自定義網域
+
+---
+
 ## 經驗教訓
 
 1. **Wrangler 4.x 有語法變化** - 要注意 compatibility_flags 格式
