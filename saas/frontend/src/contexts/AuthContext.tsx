@@ -32,16 +32,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const checkAuth = async () => {
         // 首先檢查 URL hash 中是否有 token（從 OAuth callback 來的）
         const hash = window.location.hash;
+        let token = '';
+        let needsReload = false;
+        
         if (hash && hash.includes('token=')) {
-            const token = decodeURIComponent(hash.split('token=')[1].split('&')[0]);
+            token = decodeURIComponent(hash.split('token=')[1].split('&')[0]);
             // 存儲到 localStorage
             localStorage.setItem('auth_token', token);
-            // 清除 hash，避免 token 暴露在 URL 中
-            window.location.hash = '';
+            // 需要刷新頁面來觸發 React 的重新渲染
+            needsReload = true;
         }
 
-        // 嘗試從 localStorage 獲取 token
-        const token = localStorage.getItem('auth_token');
+        // 如果需要刷新，先刷新頁面
+        if (needsReload) {
+            window.location.reload();
+            return;
+        }
+
+        // 如果沒有從 hash 獲取 token，嘗試從 localStorage 獲取
+        if (!token) {
+            token = localStorage.getItem('auth_token') || '';
+        }
         
         try {
             const response = await axios.get(`${API_BASE}/api/me`, {

@@ -22,8 +22,14 @@ app.get("/test", (c) => {
 
 // Global middleware
 app.use('*', async (c, next) => {
+  const frontendUrl = c.env.FRONTEND_URL || 'https://frontend-orpin-nu-97.vercel.app'
+  // 允許 pages.dev 網域
+  const allowOrigin = frontendUrl.includes('pages.dev') ? 
+    [frontendUrl, 'https://sbir-grants.pages.dev'] : 
+    frontendUrl
+  
   const corsMiddleware = cors({
-    origin: c.env.FRONTEND_URL || 'https://frontend-orpin-nu-97.vercel.app',
+    origin: allowOrigin,
     allowHeaders: ['Content-Type', 'Authorization'],
     allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'],
     exposeHeaders: ['Content-Length'],
