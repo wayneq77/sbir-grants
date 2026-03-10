@@ -1,0 +1,9 @@
+# Cloudflare Pages 靜態網站部署配置
+# 因為 Root directory 已設為 "frontend"，所以 command 只需 npm run build
+
+[build]
+  command = "npm run build"
+  cwd = "frontend"
+
+[build.environment]
+  NODE_VERSION = "20"
