@@ -39,6 +39,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             token = decodeURIComponent(hash.split('token=')[1].split('&')[0]);
             // 存儲到 localStorage
             localStorage.setItem('auth_token', token);
+            // 清除 hash，避免刷新時重複處理
+            window.location.hash = '';
             // 需要刷新頁面來觸發 React 的重新渲染
             needsReload = true;
         }
@@ -54,16 +56,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             token = localStorage.getItem('auth_token') || '';
         }
         
+        // 如果沒有 token，直接結束
+        if (!token) {
+            setUser(null);
+            setIsLoading(false);
+            return;
+        }
+        
         try {
             const response = await axios.get(`${API_BASE}/api/me`, {
-                headers: token ? { Authorization: `Bearer ${token}` } : {},
+                headers: { Authorization: `Bearer ${token}` },
             });
             setUser(response.data.user);
         } catch {
-            // 如果認證失敗，嘗試清除 localStorage
-            if (token) {
-                localStorage.removeItem('auth_token');
-            }
+            // 如果認證失敗，不要立即清除 localStorage，讓用戶可以重新嘗試
+            // 為了避免無限迴圈，這裡不自動清除 token
             setUser(null);
         } finally {
             setIsLoading(false);
