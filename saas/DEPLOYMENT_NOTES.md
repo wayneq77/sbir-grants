@@ -244,3 +244,70 @@ npx wrangler deploy -c wrangler.toml
 3. **GitHub Actions 要先建置** - 不能直接部署原始碼
 4. **部署前要清除 Worker** - 有時候需要刪除重建
 5. **環境變數要分開管理** - 前端用 VITE_ 前綴，後端用 Secrets
+
+---
+
+## 🔐 API 金鑰與 Token 整理（2026-03-10 更新）
+
+### GitHub Token
+| 名稱 | 值 | 用途 |
+|------|-----|------|
+| GitHub Personal Access Token | `ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx` | 用於 git push 到 GitHub |
+
+> ⚠️ **重要**：千萬不要把真實的 Token 推送到 GitHub！請用上述格式的佔位符
+
+### 環境變數 (.env)
+
+#### 前端 (.env.production)
+```env
+VITE_API_URL=https://sbir-backend.wayneq77.workers.dev/api
+VITE_TURNSTILE_SITE_KEY=0x4AAAAAAAxxxxxxxxxxxxx  # 請填入您的 Turnstile Site Key
+VITE_SKIP_TURNSTILE=false
+```
+
+#### 後端 Secrets (Cloudflare Workers)
+請使用以下指令設定：
+```bash
+cd backend
+npx wrangler secret put GOOGLE_CLIENT_ID
+npx wrangler secret put GOOGLE_CLIENT_SECRET
+npx wrangler secret put JWT_SECRET
+npx wrangler secret put TURNSTILE_SECRET_KEY
+npx wrangler secret put FRONTEND_URL
+npx wrangler secret put BACKEND_URL
+```
+
+### Cloudflare 設定
+| 服務 | 名稱 | 網址 |
+|------|------|------|
+| 前端 | sbir-grants | https://sbir-grants.pages.dev |
+| 後端 | sbir-backend | https://sbir-backend.wayneq77.workers.dev |
+| D1 資料庫 | sbir-db | - |
+| R2 儲存桶 | sbir-storage | - |
+| Vectorize | sbir-embeddings | - |
+| AI | - | - |
+
+### Google OAuth 設定
+- **authorized redirect URIs**:
+  - `https://sbir-backend.wayneq77.workers.dev/api/auth/google/callback`
+- **authorized JavaScript origins**:
+  - `https://sbir-grants.pages.dev`
+  - `https://sbir-backend.wayneq77.workers.dev`
+
+### Wrangler 部署指令
+```bash
+# 後端部署
+cd saas/backend
+npx wrangler deploy -c wrangler.toml
+
+# 前端部署
+cd saas/frontend
+npm run build
+npx wrangler pages deploy dist --project-name=sbir-grants
+```
+
+### 常見問題快速排除
+1. **Wrangler 未登入**：`npx wrangler login`
+2. **Token 過期**：`gh auth refresh`
+3. **部署失敗**檢查 `.github/workflows/deploy.yml` 是否存在於正確路徑
+4. **CORS 錯誤**：確認後端 CORS 設定允許正確的 origin
