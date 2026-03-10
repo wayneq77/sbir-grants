@@ -19,8 +19,7 @@ binding = "VECTORIZE"
 index_name = "sbir_chunks"
 
 [vars]
-FRONTEND_URL = "https://frontend-orpin-nu-97.vercel.app"
+FRONTEND_URL = "https://sbir-grants.pages.dev"
 BACKEND_URL = "https://sbir-backend.wayneq77.workers.dev"
 
-[compatibility_flags]
-nodejs_compat = true
+compatibility_flags = ["nodejs_compat"]
