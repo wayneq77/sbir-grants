@@ -22,14 +22,14 @@ app.get("/test", (c) => {
 
 // Global middleware
 app.use('*', async (c, next) => {
-  // 允許所有 pages.dev 網域 (因為每次部署網址會變)
+  // 允許所有來源
   const corsMiddleware = cors({
-    origin: '*',
+    origin: (origin: string) => origin, // 允許任何來源
     allowHeaders: ['Content-Type', 'Authorization'],
     allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'],
     exposeHeaders: ['Content-Length'],
     maxAge: 600,
-    credentials: false,
+    credentials: true,
   })
   return await corsMiddleware(c, next)
 })

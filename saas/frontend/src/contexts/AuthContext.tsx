@@ -64,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
         
         try {
-            const response = await axios.get(`${API_BASE}/api/me`, {
+            const response = await axios.get(`${API_BASE}/me`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setUser(response.data.user);
