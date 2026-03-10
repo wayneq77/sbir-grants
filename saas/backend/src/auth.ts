@@ -39,7 +39,7 @@ const getGoogleOAuthUrl = (origin: string, clientId: string, state: string, back
 }
 
 const redirectWithError = (c: Context<{ Bindings: Bindings }>, code: string) => {
-    const frontendUrl = c.env.FRONTEND_URL || 'https://frontend-orpin-nu-97.vercel.app'
+    const frontendUrl = c.env.FRONTEND_URL || 'https://sbir-grants.pages.dev'
     const url = new URL(`${frontendUrl.replace(/\/+$/, '')}/login`)
     url.searchParams.set('error', code)
     return c.redirect(url.toString(), 302)
@@ -72,7 +72,7 @@ authApp.post('/google/precheck', async (c) => {
     // Turnstile 驗證跳過（开发环境）
     console.log('[AUTH] Turnstile verification skipped for development')
 
-    const frontendUrl = c.env.FRONTEND_URL || 'https://frontend-orpin-nu-97.vercel.app'
+    const frontendUrl = c.env.FRONTEND_URL || 'https://sbir-grants.pages.dev'
     const legacyDomain = getLegacyCookieDomain(frontendUrl)
 
     if (legacyDomain) {
@@ -95,7 +95,7 @@ authApp.post('/google/precheck', async (c) => {
 })
 
 authApp.get('/google/login', (c) => {
-    const frontendUrl = c.env.FRONTEND_URL || 'https://frontend-orpin-nu-97.vercel.app'
+    const frontendUrl = c.env.FRONTEND_URL || 'https://sbir-grants.pages.dev'
     return c.redirect(`${frontendUrl.replace(/\/+$/, '')}/login`, 302)
 })
 
@@ -111,7 +111,7 @@ authApp.get('/google/callback', async (c) => {
         return c.text('Invalid request or state mismatch', 400)
     }
 
-    const frontendUrl = c.env.FRONTEND_URL || 'https://frontend-orpin-nu-97.vercel.app'
+    const frontendUrl = c.env.FRONTEND_URL || 'https://sbir-grants.pages.dev'
     const backendUrl = c.env.BACKEND_URL || 'https://sbir-backend.wayneq77.workers.dev'
     const legacyDomain = getLegacyCookieDomain(frontendUrl)
     
@@ -200,7 +200,7 @@ authApp.get('/google/callback', async (c) => {
 })
 
 authApp.post('/logout', (c) => {
-    const frontendUrl = c.env.FRONTEND_URL || 'https://frontend-orpin-nu-97.vercel.app';
+    const frontendUrl = c.env.FRONTEND_URL || 'https://sbir-grants.pages.dev';
     const legacyDomain = getLegacyCookieDomain(frontendUrl)
     deleteCookie(c, 'auth_session', { path: '/' })
     deleteCookie(c, 'oauth_state', { path: '/' })

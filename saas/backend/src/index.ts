@@ -22,7 +22,7 @@ app.get("/test", (c) => {
 
 // Global middleware
 app.use('*', async (c, next) => {
-  const frontendUrl = c.env.FRONTEND_URL || 'https://frontend-orpin-nu-97.vercel.app'
+  const frontendUrl = c.env.FRONTEND_URL || 'https://sbir-grants.pages.dev'
   // 允許 pages.dev 網域
   const allowOrigin = frontendUrl.includes('pages.dev') ? 
     [frontendUrl, 'https://sbir-grants.pages.dev'] : 
